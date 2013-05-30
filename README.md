@@ -21,7 +21,7 @@ HAML is a lot easier to write than HTML, and it's a lot easier to reason about. 
 
 Just add this to your `Gemfile` :
 
-    gem 'underscore-template'
+    gem 'haml-underscore-template'
     
 Example :
 
