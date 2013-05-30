@@ -15,7 +15,7 @@ class UndescoreTemplateCompilationTest < Test::Unit::TestCase
   test "compile" do
     result = Underscore::Engine.compile("Hello <%= name %>")
     assert_match FUNCTION_PATTERN, result
-    assert_equal('_.template("Hello <%= name %>")', result)
+    assert_equal('_.template("Hello <%= name %>\n")', result)
   end
 
 end
@@ -25,66 +25,64 @@ class UnderscoreEvaluationTest < Test::Unit::TestCase
 
   test "quotes" do
     template = "<%= thing %> is gettin' on my noives!"
-    assert_equal "This is gettin' on my noives!", Underscore::Engine.evaluate(template, :thing => "This")
+    assert_equal "This is gettin' on my noives!\n", Underscore::Engine.evaluate(template, :thing => "This")
   end
 
   test "backslashes" do
     template = "<%= thing %> is \\ridanculous"
-    assert_equal "This is \\ridanculous", Underscore::Engine.evaluate(template, :thing => "This")
+    assert_equal "This is \\ridanculous\n", Underscore::Engine.evaluate(template, :thing => "This")
   end
 
   test "backslashes into interpolation" do
     template = %q{<%= "Hello \"World\"" %>}
-    assert_equal 'Hello "World"', Underscore::Engine.evaluate(template)
+    assert_equal "Hello \"World\"\n", Underscore::Engine.evaluate(template)
   end
 
   test "implicit semicolon" do
     template = "<% var foo = 'bar' %>"
-    assert_equal '', Underscore::Engine.evaluate(template)
+    assert_equal "\n", Underscore::Engine.evaluate(template)
   end
 
   test "iteration" do
-    template = "<ul><%
-      for (var i = 0; i < people.length; i++) {
-    %><li><%= people[i] %></li><% } %></ul>"
+    template = "%ul <% for (var i = 0; i < people.length; i++) { %><li><%= people[i] %></li><% } %>"
     result = Underscore::Engine.evaluate(template, :people => ["Moe", "Larry", "Curly"])
-    assert_equal "<ul><li>Moe</li><li>Larry</li><li>Curly</li></ul>", result
+    assert_equal "<ul><li>Moe</li><li>Larry</li><li>Curly</li></ul>\n", result
   end
 
   test "without interpolation" do
     template = "<div><p>Just some text. Hey, I know this is silly but it aids consistency.</p></div>"
-    assert_equal template, Underscore::Engine.evaluate(template)
+    assert_equal template + "\n", Underscore::Engine.evaluate(template)
   end
 
   test "two quotes" do
     template = "It's its, not it's"
-    assert_equal template, Underscore::Engine.evaluate(template)
+    assert_equal template + "\n", Underscore::Engine.evaluate(template)
   end
 
   test "quote in statement and body" do
-    template = "<%
-      if(foo == 'bar'){
-    %>Statement quotes and 'quotes'.<% } %>"
-    assert_equal "Statement quotes and 'quotes'.", Underscore::Engine.evaluate(template, :foo => "bar")
+    template = "<% if(foo == 'bar'){ %>Statement quotes and 'quotes'.<% } %>"
+    assert_equal "Statement quotes and 'quotes'.\n", Underscore::Engine.evaluate(template, :foo => "bar")
   end
 
   test "newlines and tabs" do
-    template = "This\n\t\tis: <%= x %>.\n\tok.\nend."
-    assert_equal "This\n\t\tis: that.\n\tok.\nend.", Underscore::Engine.evaluate(template, :x => "that")
+    assert_raise Haml::SyntaxError do
+      template = "This\n\tis: <%= x %>.\n\tok.\nend."
+      Underscore::Engine.evaluate(template, :x => "that")
+    end
   end
 
   test "escaping" do
     template = "<%- foobar %>"
-    assert_equal "&lt;b&gt;Foo Bar&lt;&#x2F;b&gt;", Underscore::Engine.evaluate(template, { :foobar => "<b>Foo Bar</b>" })
+    assert_equal "&lt;b&gt;Foo Bar&lt;&#x2F;b&gt;\n", Underscore::Engine.evaluate(template, { :foobar => "<b>Foo Bar</b>" })
 
     template = "<%- foobar %>"
-    assert_equal "Foo &amp; Bar", Underscore::Engine.evaluate(template, { :foobar => "Foo & Bar" })
+    assert_equal "Foo &amp; Bar\n", Underscore::Engine.evaluate(template, { :foobar => "Foo & Bar" })
 
     template = "<%- foobar %>"
-    assert_equal "&quot;Foo Bar&quot;", Underscore::Engine.evaluate(template, { :foobar => '"Foo Bar"' })
+    assert_equal "&quot;Foo Bar&quot;\n", Underscore::Engine.evaluate(template, { :foobar => '"Foo Bar"' })
 
     template = "<%- foobar %>"
-    assert_equal "&#x27;Foo Bar&#x27;", Underscore::Engine.evaluate(template, { :foobar => "'Foo Bar'" })
+    assert_equal "&#x27;Foo Bar&#x27;\n", Underscore::Engine.evaluate(template, { :foobar => "'Foo Bar'" })
   end
 
 end

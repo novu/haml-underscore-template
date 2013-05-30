@@ -1,3 +1,6 @@
+require 'haml'
+require 'execjs'
+
 # UnderscoreTemplate (Embedded JavaScript) template compiler for Ruby
 # This is a port of Underscore.js' `_.template` function:
 # http://documentcloud.github.com/underscore/
@@ -31,7 +34,7 @@ module Underscore::Engine
     #     # => "_.template('Hello <%= name %>')"
     #
     def compile(source, options = {})
-      source = source.dup
+      source = ::Haml::Engine.new(source.dup).render
       js_escape!(source)
       "_.template(\"#{source}\")"
     end
@@ -45,7 +48,9 @@ module Underscore::Engine
     #     # => "Hello world"
     #
     def evaluate(template, locals = {}, options = {})
-      underscore_context.call(compile(template, options), locals)
+      template_to_compile = compile(template, options)
+
+      underscore_context.call(template_to_compile, locals)
     end
 
     protected
@@ -61,8 +66,8 @@ module Underscore::Engine
 
       def underscore_context
         @@underscore_context ||= begin
-          require 'execjs'
-          ExecJS.compile(File.read(File.join(File.dirname(__FILE__), '..', '..', 'ext', 'underscore.js')))
+          underscore = File.read(File.join(File.dirname(__FILE__), '..', '..', 'ext', 'underscore.js'))
+          ExecJS.compile(underscore)
         end
       end
   end

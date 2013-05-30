@@ -1,16 +1,23 @@
-Underscore templates compiler for Ruby
-====================================================
+# Haml Underscore Template Compiler
 
-Imagine, you've got a rails project using
-[Backbone.js](http://documentcloud.github.com/backbone) and just want to use
-the [Underscore.js](http://documentcloud.github.com/underscore/)'s
-[`_.template` function](http://documentcloud.github.com/underscore/#template)
-without having an anonymous function like
-[ejs](http://github.com/sstephenson/ruby-ejs) does.
-`underscore-template` allows you to use
-[`sprockets`](http://github.com/sstephenson/sprockets)'s'
-[`JST`](https://github.com/sstephenson/sprockets#javascript-templating-with-ejs-and-eco)
-templating directly with `_.template` function
+This project is an addendum to the Underscore Template Compiler built by Jean-Sebastien Ney. You can follow my fork
+link back to his project if you are interested in the original code. This code will no longer be following that repository.
+
+# Purpose
+
+Say that you're using **BackboneJS**, **UnderscoreJS**, and **jQuery**. A lot of the time you end up putting templates
+directly in to the HTML, and then go after them utilizing the jQuery `$('#template-for-things').html()` functionality,
+rather than having them directly included within your asset pipeline. That is not an insignificant operation for the browser
+to have to go running after, every time a page boots up. This functionality already exists in sprockets implemented as
+EJS and the JST function from the browser side. Additionally, if you're using haml and have already built a lot
+of your templates in that matter, it is a non-trivial task to convert those all over to HTML. And really, why would you want to?
+HAML is a lot easier to write than HTML, and it's a lot easier to reason about. Thus, this project.
+
+[Backbone.js](http://documentcloud.github.com/backbone) | 
+[Underscore.js](http://documentcloud.github.com/underscore/) | 
+[ejs](http://github.com/sstephenson/ruby-ejs) | 
+[sprockets](http://github.com/sstephenson/sprockets) | 
+[JST](https://github.com/sstephenson/sprockets#javascript-templating-with-ejs-and-eco) | 
 
 Just add this to your `Gemfile` :
 
@@ -19,7 +26,9 @@ Just add this to your `Gemfile` :
 Example :
 
     <!-- templates/hello.jst._ -->
-    <div>Hello, <span><%= name %></span>!</div>
+    .hello 
+      Hello
+      %span <%= name %>!
 
     // application.js
     //= require templates/hello
@@ -45,8 +54,8 @@ template and an optional hash of local variables to `UnderscoreTemplate.evaluate
 
 -----
 
-&copy; 2012 Jean-Sébastien Ney
+&copy; 2012 Christopher Rueber
 
-(actually most of credits goes to [@sstephenson](http://github.com/sstephenson))
+(most code originally written by [Jean-Sebastien Ney](http://github.com/jney/ruby-underscore-template), and a lot of framework code by [@sstephenson](http://github.com/sstephenson))
 
-Released under the MIT license
+The MIT License
