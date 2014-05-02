@@ -30,10 +30,20 @@ module Underscore::Engine
     # function takes an optional argument, an object specifying local
     # variables in the template.
     #
-    #     UnderscoreTemplate.compile("Hello <%= name %>")
-    #     # => "_.template('Hello <%= name %>')"
+    #     > Underscore::Engine.compile("Hello <%= name %>")
+    #     #  => "function(obj){\nvar __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};\nwith(obj||{}){\n__p+='Hello '+\n( name )+\n'\\n';\n}\nreturn __p;\n}"
     #
     def compile(source, options = {})
+      template_func = precompile(source, options)
+      underscore_context.eval("#{template_func}.source")
+    end
+
+    # Safely duplicates the source file and converts it to
+    # a call to UnderscoreJS' template function
+    #
+    #     UnderscoreTemplate.compile("Hello <%= name %>")
+    #     # => "_.template('Hello <%= name %>')"
+    def precompile(source, options = {})
       source = ::Haml::Engine.new(source.dup).render
       js_escape!(source)
       "_.template(\"#{source}\")"
