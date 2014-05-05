@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "haml-underscore-template"
-  s.version = "0.1.0"
+  s.version = "0.2"
   s.summary = "Haml+Underscore Template compiler"
   s.description = "Compile and evaluate underscore templates from Ruby."
 
