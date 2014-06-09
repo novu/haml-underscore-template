@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "execjs", "~> 1.4.0"
   s.add_development_dependency "json", "~> 1.7.7"
 
-  s.authors = ["Christopher Rueber", "Jean-Sébastien Ney"]
+  s.authors = ["Christopher Rueber", "Jean-Sebastien Ney"]
   s.email = ["crueber@gmail.com"]
   s.homepage = "https://github.com/crueber/haml-underscore-template/"
 end
